@@ -1,6 +1,6 @@
 import lz4.frame as compressor # Use lzma for shorter array
 
-def ncd(x, y, symmetric = True):
+def ncd(x, y, symmetric = True, concatenate = lambda x, y: np.concatenate([x, y])):
     """
         Computes distance between x and y
 
@@ -9,23 +9,19 @@ def ncd(x, y, symmetric = True):
             y (numpy array): Object 2
 
             symmetric (bool): Enforce symmetry (slower)
+            concatenate (func): Concatenation function
 
         Returns:
             Distance between objects
     """
-    # Obtain bytes
-    x_str, y_str = x.tobytes(), y.tobytes()
-
     # Compute compression
-    x_compession = len(compressor.compress(x_str))
-    y_compession = len(compressor.compress(y_str))
-    xy_compession = len(compressor.compress(x_str + y_str))
+    x_compession = len(compressor.compress(x))
+    y_compession = len(compressor.compress(y))
+    xy_compession = len(compressor.compress(concatenate(x, y)))
 
     # Ensure symmetry for fast compression
     if symmetric:
-        xy_compession = min(xy_compession, len(compressor.compress(y_str + x_str)))
+        xy_compession = min(xy_compession, len(compressor.compress(concatenate(y, x))))
 
     # Compute distance
     return (xy_compession - min(x_compession, y_compession)) / max(x_compession, y_compession)
-
-
