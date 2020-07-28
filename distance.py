@@ -1,4 +1,5 @@
 import lz4.frame as compressor # Use lzma for shorter array
+import numpy as np
 
 def ncd(x, y, symmetric = True, concatenate = lambda x, y: np.concatenate([x, y])):
     """
