@@ -22,7 +22,8 @@ def ncd(x, y, symmetric = True):
     xy_compession = len(compressor.compress(x_str + y_str))
 
     # Ensure symmetry for fast compression
-    xy_compession = min(xy_compession, len(compressor.compress(y_str + x_str)))
+    if symmetric:
+        xy_compession = min(xy_compession, len(compressor.compress(y_str + x_str)))
 
     # Compute distance
     return (xy_compession - min(x_compession, y_compession)) / max(x_compession, y_compession)
